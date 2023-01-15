@@ -1,24 +1,35 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.8.0;
+import "../src/ERC20.sol";
+import "../lib/forge-std/src/Test.sol";
+//import "../lib/forge-std/src/console.sol";
+import "forge-std/console.sol";
 
-import "forge-std/Test.sol";
-import "../src/Counter.sol";
-
-contract CounterTest is Test {
-    Counter public counter;
+contract ER0 is Test{
+    
+    
+    MyToken public A;
+    address alice = vm.addr(0x1);
+    address bob = vm.addr(0x2);
 
     function setUp() public {
-        counter = new Counter();
-        counter.setNumber(0);
+        A = new MyToken();
     }
 
-    function testIncrement() public {
-        counter.increment();
-        assertEq(counter.number(), 1);
+    function testMint() public{
+        
+        A.mint(alice, 1e18);
+        assertEq(A.balanceOf(alice), 1e18);
+    }
+    function testFailBurn() public {
+        A.burn(1e18);
+    }
+    
+    function testTransfer() public{
+        A.mint(address(alice), 2e18);
+        vm.prank(alice);
+        A.tra(address(bob), 1e18);
+        assertEq(A.balanceOf(bob), 1e18);
     }
 
-    function testSetNumber(uint256 x) public {
-        counter.setNumber(x);
-        assertEq(counter.number(), x);
-    }
 }
